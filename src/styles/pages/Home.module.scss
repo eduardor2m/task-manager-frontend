@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .list_tasks {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    overflow-y: auto;
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--title);
+    }
+
+    .wrapper_tasks {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+  }
+}
