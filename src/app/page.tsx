@@ -7,11 +7,17 @@ type Task = {
   description: string
   category: string
   date: string
-  status: string
+  status: boolean
 }
 
 async function getTasks(): Promise<Task[]> {
-  const response = await fetch('http://localhost:9090/api/task')
+  const response = await fetch('http://localhost:9090/api/task', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-cache',
+  })
   const data = await response.json().then((data) => {
     const tasks: Task[] = data.map((task: any) => {
       return {

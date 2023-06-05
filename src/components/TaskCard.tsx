@@ -9,12 +9,12 @@ type ITaskCardProps = {
     description: string
     category: string
     date: string
-    status: string
+    status: boolean
   }
 }
 
 export const TaskCard = ({ data }: ITaskCardProps) => {
-  const [status, setStatus] = useState(false)
+  const [status, setStatus] = useState(data.status)
   return (
     <div className={styles.container}>
       <section className={styles.status}>
