@@ -25,6 +25,10 @@
       span {
         font-weight: 700;
         color: var(--red);
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }

@@ -1,17 +1,16 @@
 'use client'
 
-import styles from '@/styles/pages/SignUp.module.scss'
+import styles from '@/styles/pages/SignIn.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
 type IUser = {
-  username: string
   email: string
   password: string
 }
 
-export default function SignUp() {
+export default function SignIn() {
   const [user, setUser] = useState<IUser>({} as IUser)
   const router = useRouter()
 
@@ -22,21 +21,10 @@ export default function SignUp() {
   }
 
   return (
-    <main className={styles.container} onSubmit={handlePage}>
-      <form className={styles.form}>
+    <main className={styles.container}>
+      <form className={styles.form} onSubmit={handlePage}>
         <h1 className={styles.title}>Task Manager</h1>
-        <h3 className={styles.subtitle}>Crie sua conta</h3>
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="Username"
-          onChange={(e) => {
-            setUser({
-              ...user,
-              username: e.target.value,
-            })
-          }}
-        />
+        <h3 className={styles.subtitle}>Faça login para acessar sua conta</h3>
         <input
           className={styles.input}
           type="email"
@@ -59,10 +47,10 @@ export default function SignUp() {
             })
           }}
         />
-        <input className={styles.button} type="submit" value="Cadastrar" />
-        <Link href="/signin">
+        <input className={styles.button} type="submit" value="Entrar" />
+        <Link href="/">
           <p className={styles.link}>
-            Já possui uma conta?<span> Faça login</span>
+            Não possui uma conta?<span> Cadastre-se</span>
           </p>
         </Link>
       </form>
