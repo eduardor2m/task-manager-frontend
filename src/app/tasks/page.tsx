@@ -1,8 +1,12 @@
+'use client'
+
 import { NavBar } from '@/components/NavBar'
 import { TaskCard } from '@/components/TaskCard'
 import styles from '@/styles/pages/Home.module.scss'
+import { useEffect, useState } from 'react'
 
 type Task = {
+  id: string
   title: string
   description: string
   category: string
@@ -10,44 +14,41 @@ type Task = {
   status: boolean
 }
 
-async function getTasks(): Promise<Task[]> {
-  // const response = await fetch('http://localhost:9090/api/task', {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   cache: 'no-cache',
-  // })
-  // const data = await response.json().then((data) => {
-  //   const tasks: Task[] = data.map((task: any) => {
-  //     return {
-  //       title: task.title,
-  //       description: task.description,
-  //       category: task.category,
-  //       date: task.date,
-  //       status: task.status,
-  //     }
-  //   })
-  //   return tasks
-  // })
+export default function Home() {
+  const [tasks, setTasks] = useState<Task[]>([])
 
-  // return data
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    console.log(token)
+    function getTasks() {
+      fetch('http://localhost:9090/api/task', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token!,
+        },
+        cache: 'no-cache',
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const tasksFormatted = data.map((task: Task) => {
+            return {
+              id: task.id,
+              title: task.title,
+              description: task.description,
+              category: task.category,
+              date: task.date,
+              status: task.status,
+            }
+          })
+          setTasks(tasksFormatted)
+        })
+        .catch((error) => console.log(error))
+    }
 
-  const mockTasks = [
-    {
-      title: 'Tarefa 1',
-      description: 'Descrição da tarefa 1',
-      category: 'Categoria 1',
-      date: '2021-09-01',
-      status: false,
-    },
-  ]
+    getTasks()
+  }, [])
 
-  return mockTasks
-}
-
-export default async function Home() {
-  const tasks = await getTasks()
   return (
     <main className={styles.container}>
       <NavBar

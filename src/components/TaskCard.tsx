@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 type ITaskCardProps = {
   data: {
+    id: string
     title: string
     description: string
     category: string
