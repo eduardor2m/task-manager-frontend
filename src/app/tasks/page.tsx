@@ -4,6 +4,9 @@ import { NavBar } from '@/components/NavBar'
 import { TaskCard } from '@/components/TaskCard'
 import styles from '@/styles/pages/Home.module.scss'
 import { useEffect, useState } from 'react'
+import { AiOutlinePlusCircle } from 'react-icons/ai'
+
+import { BiTaskX } from 'react-icons/bi'
 
 type Task = {
   id: string
@@ -25,7 +28,7 @@ export default function Home() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token!,
+          Authorization: `Bearer ${token}`,
         },
         cache: 'no-cache',
       })
@@ -51,18 +54,51 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <NavBar
-        data={{
-          username: 'John Doe',
-        }}
-      />
+      <NavBar />
+      <div className={styles.create_task}>
+        <input
+          className={styles.input_task}
+          type="text"
+          placeholder="Digite sua tarefa"
+        />
+        <button className={styles.button_task}>
+          Criar{' '}
+          <AiOutlinePlusCircle
+            size={20}
+            style={{
+              marginLeft: '5px',
+            }}
+          />
+        </button>
+      </div>
       <section className={styles.list_tasks}>
-        <h1 className={styles.title}>Tarefas</h1>
-        <section className={styles.wrapper_tasks}>
-          {tasks.map((task) => (
-            <TaskCard key={task.title} data={task} />
-          ))}
-        </section>
+        <div className={styles.info_list_tasks}>
+          <div className={styles.info_list_tasks_created}>
+            <h3>Tarefas criadas</h3>
+            <p>0</p>
+          </div>
+          <div className={styles.info_list_tasks_completed}>
+            <h3>Concluídas</h3>
+            <p>0</p>
+          </div>
+        </div>
+        {tasks.length === 0 ? (
+          <section className={styles.empty}>
+            <section className={styles.empty_icon}>
+              <BiTaskX size={100} />
+            </section>
+            <section className={styles.empty_text}>
+              <h3>Você não tem tarefas cadastradas</h3>
+              <p>Crie tarefas e organize seus itens a fazer</p>
+            </section>
+          </section>
+        ) : (
+          <section className={styles.wrapper_tasks}>
+            {tasks.map((task) => (
+              <TaskCard key={task.title} data={task} />
+            ))}
+          </section>
+        )}
       </section>
     </main>
   )

@@ -24,7 +24,7 @@ async function signIn(user: IUser) {
     if (response.ok) {
       const data = await response.json()
       // save token in local storage
-      localStorage.setItem('token', data)
+      localStorage.setItem('token', data.token)
       console.log(data)
     } else {
       console.log('Error:', response.status)

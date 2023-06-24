@@ -1,32 +1,12 @@
-'use client'
-
 import styles from '@/styles/components/NavBar.module.scss'
+import Image from 'next/image'
 
-import { useRouter } from 'next/navigation'
-
-type INavBarProps = {
-  data: {
-    username: string
-  }
-}
-
-export const NavBar = ({ data }: INavBarProps) => {
-  const router = useRouter()
+export const NavBar = () => {
   return (
     <nav className={styles.container}>
-      <section className={styles.wrapper_title}>
-        <h1 className={styles.title}>Bem vindo de volta, {data.username}</h1>
-        <p className={styles.subtitle}>
-          Essas são as suas tarefas,{' '}
-          <span
-            onClick={() => {
-              router.push('/signin')
-            }}
-          >
-            sair
-          </span>
-        </p>
-      </section>
+      <div className={styles.logo}>
+        <Image src="/logo.svg" alt="Logo" width={100} height={50} />
+      </div>
     </nav>
   )
 }
