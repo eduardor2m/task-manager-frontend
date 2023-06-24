@@ -21,7 +21,7 @@ export default function Home() {
     const token = localStorage.getItem('token')
     console.log(token)
     function getTasks() {
-      fetch('http://localhost:9090/api/task', {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
