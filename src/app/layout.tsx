@@ -1,3 +1,4 @@
+import { UserProvider } from '@/hooks/useUser'
 import '@/styles/globals.scss'
 
 import { Inter } from 'next/font/google'
@@ -13,11 +14,13 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/rocket.svg" />
-      </head>
-      <body className={inter.className}>{children}</body>
-    </html>
+    <UserProvider>
+      <html lang="en">
+        <head>
+          <link rel="icon" href="/rocket.svg" />
+        </head>
+        <body className={inter.className}>{children}</body>
+      </html>
+    </UserProvider>
   )
 }

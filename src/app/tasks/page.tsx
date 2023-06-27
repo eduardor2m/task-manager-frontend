@@ -2,6 +2,7 @@
 
 import { NavBar } from '@/components/NavBar'
 import { TaskCard } from '@/components/TaskCard'
+import { useUser } from '@/hooks/useUser'
 import styles from '@/styles/pages/Home.module.scss'
 import { useEffect, useState } from 'react'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
@@ -19,12 +20,13 @@ type Task = {
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
+  const { user } = useUser()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    console.log(token)
+    const token = user
+    console.log('token:', token)
     function getTasks() {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/task`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +52,7 @@ export default function Home() {
     }
 
     getTasks()
-  }, [])
+  }, [user])
 
   return (
     <main className={styles.container}>

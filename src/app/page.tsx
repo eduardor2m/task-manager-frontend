@@ -1,4 +1,5 @@
-'use client'
+'use server'
+import { useUser } from '@/hooks/useUser'
 import styles from '@/styles/pages/SignUp.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,30 +11,9 @@ type IUser = {
   password: string
 }
 
-async function signUp(user: IUser) {
-  try {
-    const response = await fetch('http://localhost:9090/api/user/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-      cache: 'no-cache',
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log(data)
-    } else {
-      console.log('Error:', response.status)
-    }
-  } catch (error) {
-    console.log('Error:', error)
-  }
-}
-
-export default async function SignUp() {
+export default function SignUp() {
   const router = useRouter()
+  const { createAccount } = useUser()
 
   async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -49,9 +29,12 @@ export default async function SignUp() {
       password,
     }
 
-    await signUp(newUser)
-
-    router.push('/signin')
+    try {
+      await createAccount(newUser.username, newUser.email, newUser.password)
+      router.push('/signin')
+    } catch (error) {
+      console.log('Error:', error)
+    }
   }
 
   return (

@@ -1,5 +1,6 @@
 'use client'
 
+import { useUser } from '@/hooks/useUser'
 import styles from '@/styles/pages/SignIn.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,32 +11,9 @@ type IUser = {
   password: string
 }
 
-async function signIn(user: IUser) {
-  try {
-    const response = await fetch('http://localhost:9090/api/user/signin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-      cache: 'no-cache',
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      // save token in local storage
-      localStorage.setItem('token', data.token)
-      console.log(data)
-    } else {
-      console.log('Error:', response.status)
-    }
-  } catch (error) {
-    console.log('Error:', error)
-  }
-}
-
-export default async function SignIn() {
+export default function SignIn() {
   const router = useRouter()
+  const { login } = useUser()
 
   async function handleSignIn(
     e: React.MouseEvent<HTMLFormElement, MouseEvent>,
@@ -46,14 +24,17 @@ export default async function SignIn() {
     const email = target.email.value
     const password = target.password.value
 
-    const newUser: IUser = {
+    const user: IUser = {
       email,
       password,
     }
 
-    await signIn(newUser)
-
-    router.push('/tasks')
+    try {
+      await login(user.email, user.password)
+      router.push('/tasks')
+    } catch (error) {
+      console.log('Error:', error)
+    }
   }
 
   return (
