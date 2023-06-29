@@ -4,7 +4,7 @@ import styles from '@/styles/components/TaskCard.module.scss'
 import { useState } from 'react'
 import { FiTrash2 } from 'react-icons/fi'
 import { AiOutlineCheck } from 'react-icons/ai'
-import { useUser } from '@/hooks/useUser'
+import { useTask } from '@/hooks/useTask'
 
 type ITaskCardProps = {
   data: {
@@ -19,24 +19,10 @@ type ITaskCardProps = {
 
 export const TaskCard = ({ data }: ITaskCardProps) => {
   const [status, setStatus] = useState(data.status)
-  const { user } = useUser()
+  const { delete: deleteTask } = useTask()
 
   async function handleDeleteTask() {
-    const token = user
-    const id = data.id
-
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/task/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        cache: 'no-cache',
-      })
-    } catch (error) {
-      console.log(error)
-    }
+    deleteTask(data.id)
   }
 
   return (

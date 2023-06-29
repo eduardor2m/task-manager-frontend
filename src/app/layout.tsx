@@ -1,3 +1,4 @@
+import { TaskProvider } from '@/hooks/useTask'
 import { UserProvider } from '@/hooks/useUser'
 import '@/styles/globals.scss'
 
@@ -15,12 +16,14 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <UserProvider>
-      <html lang="en">
-        <head>
-          <link rel="icon" href="/rocket.svg" />
-        </head>
-        <body className={inter.className}>{children}</body>
-      </html>
+      <TaskProvider>
+        <html lang="en">
+          <head>
+            <link rel="icon" href="/rocket.svg" />
+          </head>
+          <body className={inter.className}>{children}</body>
+        </html>
+      </TaskProvider>
     </UserProvider>
   )
 }

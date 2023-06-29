@@ -3,7 +3,7 @@
 
 import { NavBar } from '@/components/NavBar'
 import { TaskCard } from '@/components/TaskCard'
-import { useUser } from '@/hooks/useUser'
+import { useTask } from '@/hooks/useTask'
 import styles from '@/styles/pages/Home.module.scss'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -36,73 +36,39 @@ export default function Home() {
     category: 'teste',
     status: false,
   })
-  const { user } = useUser()
+
+  const { getAll, create, task: allTasks } = useTask()
 
   useEffect(() => {
-    const token = user
-    console.log('token:', token)
-    function getTasks() {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/task`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        cache: 'no-cache',
+    const tasksFormatted = allTasks
+    setTasks(tasksFormatted)
+
+    if (allTasks.length === 0) {
+      getAll().catch((error) => {
+        console.log(error)
+        alert('Sessão expirada, faça login novamente')
+        router.push('/signin')
       })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('data:', data.message)
-          if (data.message === 'Unauthorized') {
-            router.push('/signin')
-          }
-
-          const tasksFormatted = data.map((task: Task) => {
-            return {
-              id: task.id,
-              title: task.title,
-              description: task.description,
-              category: task.category,
-              date: task.date,
-              status: task.status,
-            }
-          })
-          setTasks(tasksFormatted)
-        })
-        .catch((error) => console.log(error))
     }
-
-    getTasks()
-  }, [user])
+  }, [allTasks])
 
   function handleCreateTask() {
-    console.log('task:', task)
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/task`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user}`,
-      },
-      body: JSON.stringify(task),
-      cache: 'no-cache',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('data:', data.message)
-        if (data.message === 'Unauthorized') {
-          router.push('/signin')
-        }
-        const tasksFormatted = data.map((task: Task) => {
-          return {
-            title: task.title,
-            description: task.description,
-            category: task.category,
-            status: task.status,
-          }
-        })
-        setTasks(tasksFormatted)
+    const newTask = {
+      title: task.title,
+      description: task.description,
+      category: task.category,
+      status: task.status,
+    }
+
+    create(newTask)
+      .then(() => {
+        router.refresh()
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.message)
+        alert('Sessão expirada, faça login novamente')
+        router.push('/signin')
+      })
   }
 
   return (
@@ -152,7 +118,7 @@ export default function Home() {
         ) : (
           <section className={styles.wrapper_tasks}>
             {tasks.map((task) => (
-              <TaskCard key={task.title} data={task} />
+              <TaskCard key={task.id} data={task} />
             ))}
           </section>
         )}
