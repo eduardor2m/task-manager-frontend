@@ -31,6 +31,7 @@ interface ITaskContextData {
   task: ITask[]
   create: (task: ITaskDTO) => Promise<void>
   update: (task: ITask) => Promise<void>
+  updateStatus: (id: string) => Promise<void>
   delete: (id: string) => Promise<void>
   get: (id: string) => Promise<void>
   getAll: () => Promise<void>
@@ -67,7 +68,19 @@ export function TaskProvider({ children }: ITaskProviderProps) {
 
       if (response.ok) {
         const data = await response.json()
-        setTasks([...tasks, data])
+
+        setTasks([
+          ...tasks,
+          {
+            id: data.id,
+            title: task.title,
+            description: task.description,
+            category: task.category,
+            date: data.date,
+            status: task.status,
+          },
+        ])
+        console.log(tasks)
       } else {
         throw new Error(response.statusText)
       }
@@ -95,6 +108,36 @@ export function TaskProvider({ children }: ITaskProviderProps) {
 
       if (response.ok) {
         const data = await response.json()
+        const index = tasks.findIndex((task) => task.id === data.id)
+        tasks[index] = data
+        setTasks([...tasks])
+      } else {
+        console.log('Error:', response.status)
+      }
+    } catch (error) {
+      console.log('Error:', error)
+    }
+  }
+
+  async function updateStatus(id: string): Promise<void> {
+    try {
+      const getTokenFromCookie = getCookie(userCookieKey)?.valueOf().toString()
+      const token = JSON.parse(getTokenFromCookie!).token
+      const response = await fetch(
+        `http://localhost:9090/api/task/${id}/status`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          cache: 'no-cache',
+        },
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+
         const index = tasks.findIndex((task) => task.id === data.id)
         tasks[index] = data
         setTasks([...tasks])
@@ -187,6 +230,7 @@ export function TaskProvider({ children }: ITaskProviderProps) {
         task: tasks,
         create,
         update,
+        updateStatus,
         delete: deleteTask,
         get,
         getAll,

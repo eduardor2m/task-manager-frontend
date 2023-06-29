@@ -88,11 +88,15 @@ export default function Home() {
         <div className={styles.info_list_tasks}>
           <div className={styles.info_list_tasks_created}>
             <h3>Tarefas criadas</h3>
-            <p>0</p>
+            <p>{tasks.length === 0 ? 0 : tasks.length}</p>
           </div>
           <div className={styles.info_list_tasks_completed}>
             <h3>Concluídas</h3>
-            <p>0</p>
+            <p>
+              {tasks.length === 0
+                ? 0
+                : tasks.filter((task) => task.status === true).length}
+            </p>
           </div>
         </div>
         {tasks.length === 0 ? (

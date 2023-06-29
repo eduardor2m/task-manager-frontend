@@ -19,10 +19,20 @@ type ITaskCardProps = {
 
 export const TaskCard = ({ data }: ITaskCardProps) => {
   const [status, setStatus] = useState(data.status)
-  const { delete: deleteTask } = useTask()
+  const { delete: deleteTask, updateStatus } = useTask()
 
   async function handleDeleteTask() {
     deleteTask(data.id)
+  }
+
+  async function handleUpdateTask() {
+    await updateStatus(data.id)
+      .then(() => {
+        setStatus(!status)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (
@@ -34,7 +44,7 @@ export const TaskCard = ({ data }: ITaskCardProps) => {
             border: status ? '1px solid #5E60CE' : '2px solid #4ea8de',
           }}
           className={styles.checkbox}
-          onClick={() => setStatus(!status)}
+          onClick={() => handleUpdateTask()}
         >
           {status ? <AiOutlineCheck size={12} color="#f2f2f2" /> : null}
         </button>
