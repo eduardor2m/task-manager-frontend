@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { NavBar } from '@/components/NavBar'
 import { TaskCard } from '@/components/TaskCard'
 import { useUser } from '@/hooks/useUser'
 import styles from '@/styles/pages/Home.module.scss'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 
@@ -18,8 +20,22 @@ type Task = {
   status: boolean
 }
 
+type TaskProps = {
+  title: string
+  description: string
+  category: string
+  status: boolean
+}
+
 export default function Home() {
+  const router = useRouter()
   const [tasks, setTasks] = useState<Task[]>([])
+  const [task, setTask] = useState<TaskProps>({
+    title: 'teste',
+    description: 'teste',
+    category: 'teste',
+    status: false,
+  })
   const { user } = useUser()
 
   useEffect(() => {
@@ -36,6 +52,11 @@ export default function Home() {
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log('data:', data.message)
+          if (data.message === 'Unauthorized') {
+            router.push('/signin')
+          }
+
           const tasksFormatted = data.map((task: Task) => {
             return {
               id: task.id,
@@ -54,6 +75,36 @@ export default function Home() {
     getTasks()
   }, [user])
 
+  function handleCreateTask() {
+    console.log('task:', task)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/task`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user}`,
+      },
+      body: JSON.stringify(task),
+      cache: 'no-cache',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data:', data.message)
+        if (data.message === 'Unauthorized') {
+          router.push('/signin')
+        }
+        const tasksFormatted = data.map((task: Task) => {
+          return {
+            title: task.title,
+            description: task.description,
+            category: task.category,
+            status: task.status,
+          }
+        })
+        setTasks(tasksFormatted)
+      })
+      .catch((error) => console.log(error))
+  }
+
   return (
     <main className={styles.container}>
       <NavBar />
@@ -62,8 +113,12 @@ export default function Home() {
           className={styles.input_task}
           type="text"
           placeholder="Digite sua tarefa"
+          onChange={(e) => setTask({ ...task, title: e.target.value })}
         />
-        <button className={styles.button_task}>
+        <button
+          className={styles.button_task}
+          onClick={() => handleCreateTask()}
+        >
           Criar{' '}
           <AiOutlinePlusCircle
             size={20}

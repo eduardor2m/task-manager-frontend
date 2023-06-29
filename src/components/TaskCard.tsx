@@ -4,6 +4,7 @@ import styles from '@/styles/components/TaskCard.module.scss'
 import { useState } from 'react'
 import { FiTrash2 } from 'react-icons/fi'
 import { AiOutlineCheck } from 'react-icons/ai'
+import { useUser } from '@/hooks/useUser'
 
 type ITaskCardProps = {
   data: {
@@ -18,6 +19,26 @@ type ITaskCardProps = {
 
 export const TaskCard = ({ data }: ITaskCardProps) => {
   const [status, setStatus] = useState(data.status)
+  const { user } = useUser()
+
+  async function handleDeleteTask() {
+    const token = user
+    const id = data.id
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/task/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-cache',
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className={styles.container}>
       <section className={styles.status}>
@@ -44,7 +65,10 @@ export const TaskCard = ({ data }: ITaskCardProps) => {
         </p>
       </section>
       <section className={styles.delete}>
-        <button className={styles.delete_button}>
+        <button
+          className={styles.delete_button}
+          onClick={() => handleDeleteTask()}
+        >
           <FiTrash2 color="#808080" size={22} />
         </button>
       </section>

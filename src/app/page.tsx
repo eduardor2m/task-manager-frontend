@@ -1,4 +1,4 @@
-'use server'
+'use client'
 import { useUser } from '@/hooks/useUser'
 import styles from '@/styles/pages/SignUp.module.scss'
 import Link from 'next/link'

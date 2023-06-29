@@ -40,10 +40,11 @@ export function UserProvider({ children }: IUserProviderProps) {
   const userCookieKey = '@taskmanager:user'
 
   async function userInStorage() {
-    const token = getCookie(userCookieKey)?.toString()
+    const token = getCookie(userCookieKey)?.valueOf().toString()
+    const tokenFormatted = JSON.parse(token!)
 
     if (token) {
-      setUser(JSON.parse(token))
+      setUser(tokenFormatted.token)
     }
   }
 
