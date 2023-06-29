@@ -19,12 +19,8 @@ type IUser = {
 
 interface IUserContextData {
   user: IUser
-  createAccount: (
-    username: string,
-    email: string,
-    password: string,
-  ) => Promise<void>
-  login: (email: string, password: string) => Promise<void>
+  signup: (username: string, email: string, password: string) => Promise<void>
+  signin: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -40,11 +36,11 @@ export function UserProvider({ children }: IUserProviderProps) {
   const userCookieKey = '@taskmanager:user'
 
   async function userInStorage() {
-    const token = getCookie(userCookieKey)?.valueOf().toString()
-    const tokenFormatted = JSON.parse(token!)
+    const getTokenFromCookie = getCookie(userCookieKey)?.valueOf().toString()
+    const token = JSON.parse(getTokenFromCookie!).token
 
     if (token) {
-      setUser(tokenFormatted.token)
+      setUser(token)
     }
   }
 
@@ -52,7 +48,7 @@ export function UserProvider({ children }: IUserProviderProps) {
     userInStorage()
   }, [])
 
-  async function createAccount(
+  async function signup(
     username: string,
     email: string,
     password: string,
@@ -78,7 +74,7 @@ export function UserProvider({ children }: IUserProviderProps) {
     }
   }
 
-  async function login(email: string, password: string): Promise<void> {
+  async function signin(email: string, password: string): Promise<void> {
     try {
       const response = await fetch('http://localhost:9090/api/user/signin', {
         method: 'POST',
@@ -118,8 +114,8 @@ export function UserProvider({ children }: IUserProviderProps) {
     <UserContext.Provider
       value={{
         user,
-        createAccount,
-        login,
+        signup,
+        signin,
         logout,
       }}
     >

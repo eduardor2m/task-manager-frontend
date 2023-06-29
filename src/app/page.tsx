@@ -13,7 +13,7 @@ type IUser = {
 
 export default function SignUp() {
   const router = useRouter()
-  const { createAccount } = useUser()
+  const { signup } = useUser()
 
   async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -30,7 +30,7 @@ export default function SignUp() {
     }
 
     try {
-      await createAccount(newUser.username, newUser.email, newUser.password)
+      await signup(newUser.username, newUser.email, newUser.password)
       router.push('/signin')
     } catch (error) {
       console.log('Error:', error)

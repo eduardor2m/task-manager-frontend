@@ -13,7 +13,7 @@ type IUser = {
 
 export default function SignIn() {
   const router = useRouter()
-  const { login } = useUser()
+  const { signin } = useUser()
 
   async function handleSignIn(
     e: React.MouseEvent<HTMLFormElement, MouseEvent>,
@@ -30,7 +30,7 @@ export default function SignIn() {
     }
 
     try {
-      await login(user.email, user.password)
+      await signin(user.email, user.password)
       router.push('/tasks')
     } catch (error) {
       console.log('Error:', error)

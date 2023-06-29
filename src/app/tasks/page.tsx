@@ -20,22 +20,10 @@ type Task = {
   status: boolean
 }
 
-type TaskProps = {
-  title: string
-  description: string
-  category: string
-  status: boolean
-}
-
 export default function Home() {
   const router = useRouter()
   const [tasks, setTasks] = useState<Task[]>([])
-  const [task, setTask] = useState<TaskProps>({
-    title: 'teste',
-    description: 'teste',
-    category: 'teste',
-    status: false,
-  })
+  const [task, setTask] = useState<Task>({} as Task)
 
   const { getAll, create, task: allTasks } = useTask()
 
@@ -54,11 +42,13 @@ export default function Home() {
 
   function handleCreateTask() {
     const newTask = {
-      title: task.title,
+      title: 'task title',
       description: task.description,
-      category: task.category,
-      status: task.status,
+      category: 'task category',
+      status: false,
     }
+
+    console.log(newTask)
 
     create(newTask)
       .then(() => {
@@ -79,7 +69,7 @@ export default function Home() {
           className={styles.input_task}
           type="text"
           placeholder="Digite sua tarefa"
-          onChange={(e) => setTask({ ...task, title: e.target.value })}
+          onChange={(e) => setTask({ ...task, description: e.target.value })}
         />
         <button
           className={styles.button_task}
